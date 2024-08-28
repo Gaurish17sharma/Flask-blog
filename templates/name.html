@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if username %} 
+    <h1> hello {{ username }}!!</h1>
+{% else %}
+    <h1>What's Your Name </h1>
+    <br/>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.username.label(
+                class="form-label"
+            ) }}<br>
+            {{ form.username(
+                class="form-control") }}
+        </p>
+        <p>
+            {{ form.submit(
+                class="btn btn-secondary"
+            ) }}
+        </p>
+    </form>
+{% endif %}
+{% endblock %}
