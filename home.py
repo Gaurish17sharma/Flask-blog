@@ -28,6 +28,25 @@ class Users(db.Model):
     
 db.create_all()
 
+@app.route('/user/add', methods=['GET','POST'])
+def add_user():
+    username = None
+    form = UserForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
+        if user is None:
+            user = Users(username = form.username.data, email = form.email.data)
+            db.session.add(user)
+            db.session.commit()
+        username = form.username.data
+        form.username.data = ' '
+        form.email.data = ' '
+        flash("User Added Successfully!!!")
+
+    return render_template('add_user.html' ,
+                           form = form, 
+                           username = username)
+
 @app.route('/')
 
 def index():
@@ -67,9 +86,4 @@ def name():
                            form=form)
 
 
-@app.route('/user/add', methods=['GET','POST'])
-def add_user():
-    form = UserForm()
-    return render_template('add_user.html' ,
-                           form = form)
 
