@@ -1,9 +1,32 @@
 from flask import Flask , render_template , flash
-from nameform import NameForm
+from nameform import NameForm , UserForm
 from config import Config
+from flask_sqlalchemy import SQLAlchemy
+from os import environ
+from datetime import datetime , timezone
 
+
+# flask instance
 app = Flask(__name__)
+# secret key
 app.config['SECRET_KEY'] = Config.SECRET_KEY
+# adding database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# initialize the database
+db = SQLAlchemy(app)
+
+app.app_context().push()
+
+# creating a model
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return { 'id': self.id , 'username': self.username, 'email': self.email }
+    
+db.create_all()
 
 @app.route('/')
 
@@ -43,4 +66,10 @@ def name():
                            username = username , 
                            form=form)
 
+
+@app.route('/user/add', methods=['GET','POST'])
+def add_user():
+    form = UserForm()
+    return render_template('add_user.html' ,
+                           form = form)
 

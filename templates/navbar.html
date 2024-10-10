@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark bg-dark mb-5">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('index') }}">Blogging App</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -15,6 +15,10 @@
                     <a class="nav-link" href="{{ url_for('name') }}">
                         Name</a>
                 </li>
+                <li class="nav-item"></li>
+                    <a class="nav-link" href="{{ url_for('add_user') }}">
+                        Add User</a>
+                </li>
             </ul>
             <form class="d-flex p-1 ml-auto" role="search">
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -23,3 +27,4 @@
         </div>
     </div>
 </nav>
+
