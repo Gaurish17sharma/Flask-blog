@@ -25,7 +25,7 @@ class Users(db.Model):
     date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
 
     def __repr__(self):
-        return { 'id': self.id , 'username': self.username, 'email': self.email }
+        return { 'id': self.id , 'username': self.username, 'email': self.email, 'date added': self.date_added }
     
 db.create_all()
 
@@ -43,12 +43,12 @@ def add_user():
         form.username.data = ' '
         form.email.data = ' '
         flash("User Added Successfully!!!")
-
-
-
+    
+    my_users = Users.query.order_by(Users.id)
     return render_template('add_user.html' ,
                            form = form, 
-                           username = username)
+                           username = username,
+                           my_users = my_users)
 
 @app.route('/')
 

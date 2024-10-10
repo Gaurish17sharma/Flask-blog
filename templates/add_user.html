@@ -15,10 +15,20 @@
 
 {% if username %}
 <h1> hello {{ username }}!!</h1>
-<h2>User List</h2>
+<h2>User List:</h2>
+<br/><br>
+{% for my_user in my_users %}
+
+ {{ my_user.id }}. 
+ {{ my_user.username }} -
+ {{ my_user.email }}
+ <br>
+
+{% endfor %}
+
 {% else %}
 <h2>Add User:</h2>
-<form action="" method="post" novalidate>
+<form action="" method="POST">
     {{ form.hidden_tag() }}
     <p>
         {{ form.username.label(
