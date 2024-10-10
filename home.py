@@ -22,6 +22,7 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
 
     def __repr__(self):
         return { 'id': self.id , 'username': self.username, 'email': self.email }
@@ -42,6 +43,8 @@ def add_user():
         form.username.data = ' '
         form.email.data = ' '
         flash("User Added Successfully!!!")
+
+
 
     return render_template('add_user.html' ,
                            form = form, 
