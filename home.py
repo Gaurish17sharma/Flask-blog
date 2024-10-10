@@ -1,4 +1,4 @@
-from flask import Flask , render_template
+from flask import Flask , render_template , flash
 from nameform import NameForm
 from config import Config
 
@@ -19,12 +19,15 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html' , title ='Home' , users = users, posts = posts)
+    return render_template('index.html' , title ='Home' , 
+                           users = users, 
+                           posts = posts)
 
 @app.route('/user/<name>')
 
 def user(name):
-    return render_template('user.html', name = name )
+    return render_template('user.html', 
+                           name = name )
 
 
 @app.route('/name' , methods=['GET', 'POST'])
@@ -33,7 +36,11 @@ def name():
     form = NameForm()
     if form.validate_on_submit():
         username = form.username.data
-        form.username.data = None
-    return render_template('name.html', username = username , form=form)
+        form.username.data = ' '
+        flash("Form Submitted Successfully!!!")
+
+    return render_template('name.html', 
+                           username = username , 
+                           form=form)
 
 
