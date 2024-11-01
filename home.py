@@ -5,13 +5,14 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ
 from datetime import datetime , timezone
 
-
 # flask instance
 app = Flask(__name__)
 # secret key
 app.config['SECRET_KEY'] = Config.SECRET_KEY
-# adding database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# adding old database
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# adding new database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gaurishsharma:password@localhost/flask_users'
 # initialize the database
 db = SQLAlchemy(app)
 
