@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>User List:</h2>
+<br/><br>
+{% for my_user in my_users %}
+
+ {{ my_user.id }}. 
+ {{ my_user.username }} -
+ {{ my_user.email }}
+ <br>
+
+{% endfor %}
+
+{% endblock %}

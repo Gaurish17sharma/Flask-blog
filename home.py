@@ -90,4 +90,7 @@ def name():
                            form=form)
 
 
+@app.route('/user_list')
 
+def user_list():
+    return render_template('user_list.html' )
