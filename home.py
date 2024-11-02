@@ -53,25 +53,26 @@ def add_user():
 
 
 # updating database
-@app.route('/update/<int:id>', methods = ['GET' , 'POST'])
+@app.route('/update_list/<int:id>', methods = ['GET' , 'POST'])
 def update_list(id):
     form = UserForm()
     updating_users = Users.query.get_or_404(id)
     if form.validate_on_submit():
-        updating_users = Users(username = form.username.data , email = form.email.data)
+        updating_users.username =  form.username.data 
+        updating_users.email = form.email.data
         try:
             db.session.commit()
-            flash('User Updataed Successfully!!!')
-            return render_template('update.html',
+            flash('User Updated Successfully!!!')
+            return render_template('update_list.html',
                                    form = form,
                                    updating_users = updating_users)
         except:
             flash('Error... please Try Again')
-            return render_template('update.html',
+            return render_template('update_list.html',
                                    form = form,
                                    updating_users = updating_users)
     else:
-        return render_template('update.html',
+        return render_template('update_list.html',
                                    form = form,
                                    updating_users = updating_users)
 
@@ -80,7 +81,7 @@ def update_list(id):
 
 
 @app.route('/user/list' , methods =['GET', 'POST'])
-def user_list():   
+def user_list():
     my_users = Users.query.order_by(Users.id)
     return render_template('user_list.html' ,
                            my_users = my_users)

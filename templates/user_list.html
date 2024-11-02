@@ -6,9 +6,11 @@
 <br/><br>
 {% for my_user in my_users %}
 
- {{ my_user.id }}. 
- {{ my_user.username }} -
- {{ my_user.email }}
+ {{ my_user.id }}.
+ <a href=" {{ url_for('update_list',id = my_user.id) }}">
+    {{ my_user.username }}
+ </a> 
+ -{{ my_user.email }}
  <br>
 
 {% endfor %}
