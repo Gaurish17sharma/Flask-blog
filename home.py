@@ -51,6 +51,42 @@ def add_user():
                            username = username,
                            my_users = my_users)
 
+
+# updating database
+@app.route('/update/<int:id>', methods = ['GET' , 'POST'])
+def update_list(id):
+    form = UserForm()
+    updating_users = Users.query.get_or_404(id)
+    if form.validate_on_submit():
+        updating_users = Users(username = form.username.data , email = form.email.data)
+        try:
+            db.session.commit()
+            flash('User Updataed Successfully!!!')
+            return render_template('update.html',
+                                   form = form,
+                                   updating_users = updating_users)
+        except:
+            flash('Error... please Try Again')
+            return render_template('update.html',
+                                   form = form,
+                                   updating_users = updating_users)
+    else:
+        return render_template('update.html',
+                                   form = form,
+                                   updating_users = updating_users)
+
+
+
+
+
+@app.route('/user/list' , methods =['GET', 'POST'])
+def user_list():   
+    my_users = Users.query.order_by(Users.id)
+    return render_template('user_list.html' ,
+                           my_users = my_users)
+
+
+
 @app.route('/')
 
 def index():
@@ -88,9 +124,3 @@ def name():
     return render_template('name.html', 
                            username = username , 
                            form=form)
-
-
-@app.route('/user_list')
-
-def user_list():
-    return render_template('user_list.html' )
