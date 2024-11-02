@@ -63,7 +63,7 @@ def add_user():
                            my_users = my_users)
 
 
-# updating database
+# updating user info
 @app.route('/update_list/<int:id>', methods = ['GET' , 'POST'])
 def update_list(id):
     form = UserForm()
@@ -88,12 +88,18 @@ def update_list(id):
                                    form = form,
                                    updating_users = updating_users)
 
+#deleting user
+@app.route('/delete_user', methods = ['GET' , 'POST'])
+def delete_user():
+
+
 #user list
 @app.route('/user/list' , methods =['GET', 'POST'])
 def user_list():
     my_users = Users.query.order_by(Users.id)
     return render_template('user_list.html' ,
                            my_users = my_users)
+
 
 
 #example
