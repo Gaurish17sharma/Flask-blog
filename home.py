@@ -2,6 +2,7 @@ from flask import Flask , render_template , flash
 from nameform import NameForm , UserForm
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from os import environ
 from datetime import datetime , timezone
 
@@ -17,19 +18,26 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gaurishsharma:password@loc
 db = SQLAlchemy(app)
 
 app.app_context().push()
+migrate = Migrate(app , db)
 
 # creating a model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    fav_color = db.Column(db.String(120))
     date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
 
     def __repr__(self):
-        return { 'id': self.id , 'username': self.username, 'email': self.email, 'date added': self.date_added }
+        return { 'id': self.id , 
+                'username': self.username, 
+                'email': self.email,
+                'fav_color': self.fav_color, 
+                'date added': self.date_added }
     
 db.create_all()
 
+#adding user
 @app.route('/user/add', methods=['GET','POST'])
 def add_user():
     username = None
@@ -37,12 +45,15 @@ def add_user():
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
         if user is None:
-            user = Users(username = form.username.data, email = form.email.data)
+            user = Users(username = form.username.data, 
+                         email = form.email.data, 
+                         fav_color = form.fav_color.data)
             db.session.add(user)
             db.session.commit()
         username = form.username.data
         form.username.data = ' '
         form.email.data = ' '
+        form.fav_color.data = ' '
         flash("User Added Successfully!!!")
     
     my_users = Users.query.order_by(Users.id)
@@ -60,6 +71,7 @@ def update_list(id):
     if form.validate_on_submit():
         updating_users.username =  form.username.data 
         updating_users.email = form.email.data
+        updating_users.fav_color = form.fav_color.data
         try:
             db.session.commit()
             flash('User Updated Successfully!!!')
@@ -76,10 +88,7 @@ def update_list(id):
                                    form = form,
                                    updating_users = updating_users)
 
-
-
-
-
+#user list
 @app.route('/user/list' , methods =['GET', 'POST'])
 def user_list():
     my_users = Users.query.order_by(Users.id)
