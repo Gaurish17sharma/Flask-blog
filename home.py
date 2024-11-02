@@ -90,7 +90,16 @@ def update_list(id):
 
 #deleting user
 @app.route('/delete_user', methods = ['GET' , 'POST'])
-def delete_user():
+def delete_user(id):
+    form = UserForm()
+    user_to_delete = Users.query.get_or_404(id)
+    if form.validate_on_submit():
+        if user_to_delete is not None:
+            user_to_delete.username = ' '
+            user_to_delete.email = ' '
+            user_to_delete.fav_color = ' '
+
+
 
 
 #user list
