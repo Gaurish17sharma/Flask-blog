@@ -130,6 +130,7 @@ def index():
                            users = users, 
                            posts = posts)
 
+#practice
 @app.route('/user/<name>')
 
 def user(name):
@@ -137,6 +138,7 @@ def user(name):
                            name = name )
 
 
+#nameform
 @app.route('/name' , methods=['GET', 'POST'])
 def name():
     username = None
