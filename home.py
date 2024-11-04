@@ -130,7 +130,7 @@ def index():
                            users = users, 
                            posts = posts)
 
-#practice
+#practice route
 @app.route('/user/<name>')
 
 def user(name):
