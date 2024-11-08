@@ -59,10 +59,11 @@ def add_user():
     if form.validate_on_submit():
         user = Users.query.filter_by(email=form.email.data).first()
         if user is None:
+            hashed_password = generate_password_hash(form.password_hash.data, method='pbkdf2:sha256')
             user = Users(username = form.username.data, 
                          email = form.email.data, 
                          fav_color = form.fav_color.data,
-                         password_hash = form.password_hash.data)
+                         password_hash = hashed_password)
             db.session.add(user)
             db.session.commit()
         username = form.username.data
@@ -93,14 +94,14 @@ def update_list(id):
             flash('User Updated Successfully!!!')
             return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users,
-                                   id = id)
+                                   updating_users = updating_users
+                                   )
         except:
             flash('Error... please Try Again')
             return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users,
-                                   id = id)
+                                   updating_users = updating_users
+                                   )
     else:
         return render_template('update_list.html',
                                    form = form,
