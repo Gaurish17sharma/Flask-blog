@@ -1,5 +1,5 @@
 from flask import Flask , render_template , flash
-from nameform import NameForm , UserForm
+from forms import NameForm , UserForm
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -61,13 +61,15 @@ def add_user():
         if user is None:
             user = Users(username = form.username.data, 
                          email = form.email.data, 
-                         fav_color = form.fav_color.data)
+                         fav_color = form.fav_color.data,
+                         password_hash = form.password_hash.data)
             db.session.add(user)
             db.session.commit()
         username = form.username.data
         form.username.data = ' '
         form.email.data = ' '
         form.fav_color.data = ' '
+        form.password_hash = ' '
         flash("User Added Successfully!!!")
     
     my_users = Users.query.order_by(Users.id)
