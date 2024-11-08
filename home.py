@@ -77,29 +77,44 @@ def update_list(id):
             flash('User Updated Successfully!!!')
             return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users)
+                                   updating_users = updating_users,
+                                   id = id)
         except:
             flash('Error... please Try Again')
             return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users)
+                                   updating_users = updating_users,
+                                   id = id)
     else:
         return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users)
+                                   updating_users = updating_users,
+                                   id = id)
 
 #deleting user
-@app.route('/delete_user', methods = ['GET' , 'POST'])
+@app.route('/delete_user/<int:id>', methods = ['GET' , 'POST'])
 def delete_user(id):
     form = UserForm()
+    username = None
     user_to_delete = Users.query.get_or_404(id)
-    if form.validate_on_submit():
-        if user_to_delete is not None:
-            user_to_delete.username = ' '
-            user_to_delete.email = ' '
-            user_to_delete.fav_color = ' '
+    try:
+        db.session.delete(user_to_delete)
+        db.session.commit()
+        flash("User Deleted Successfully!!")
 
-
+        my_users = Users.query.order_by(Users.id)
+        return render_template('add_user.html' ,
+                           form = form, 
+                           username = username,
+                           my_users = my_users)
+        
+    except:
+        flash("There was an error in deleing the user try again!!")
+        my_users = Users.query.order_by(Users.id)
+        return render_template('add_user.html' ,
+                           form = form, 
+                           username = username,
+                           my_users = my_users)
 
 
 #user list
