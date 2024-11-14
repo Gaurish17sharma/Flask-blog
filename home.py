@@ -1,5 +1,5 @@
 from flask import Flask , render_template , flash
-from forms import NameForm , UserForm
+from forms import NameForm , UserForm , UserUpdationForm
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -70,7 +70,6 @@ def add_user():
         form.username.data = ' '
         form.email.data = ' '
         form.fav_color.data = ' '
-        form.password_hash = ' '
         flash("User Added Successfully!!!")
     
     my_users = Users.query.order_by(Users.id)
@@ -83,18 +82,21 @@ def add_user():
 # updating user info
 @app.route('/update_list/<int:id>', methods = ['GET' , 'POST'])
 def update_list(id):
-    form = UserForm()
+    print(id)
+    form = UserUpdationForm()
     updating_users = Users.query.get_or_404(id)
     if form.validate_on_submit():
         updating_users.username =  form.username.data 
         updating_users.email = form.email.data
         updating_users.fav_color = form.fav_color.data
         try:
+            print("does validate...")
             db.session.commit()
             flash('User Updated Successfully!!!')
             return render_template('update_list.html',
                                    form = form,
-                                   updating_users = updating_users
+                                   updating_users = updating_users,
+                                   id = id
                                    )
         except:
             flash('Error... please Try Again')

@@ -16,3 +16,9 @@ class UserForm(FlaskForm):
                             message='Passwords must match')])
     password_hash2 = PasswordField('Confirm Password',[validators.DataRequired()] )
     submit = SubmitField('Submit')
+
+class UserUpdationForm(FlaskForm):
+    username = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    fav_color = StringField('Favourite Color')
+    submit = SubmitField('Submit')
