@@ -21,7 +21,16 @@ db = SQLAlchemy(app)
 app.app_context().push()
 migrate = Migrate(app , db)
 
-# creating a model
+#creating blog model
+class Posts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    content = db.Column(db.Text)
+    author = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime , default = datetime.now(timezone.utc))
+    slug = db.Column(db.String(255))
+
+# creating a User model
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), nullable=False)
@@ -40,16 +49,9 @@ class Users(db.Model):
 
     def verify_password(self,password):
         return check_password_hash(self.password_hash , password)
-
-
-    def __repr__(self):
-        return { 'id': self.id , 
-                'username': self.username, 
-                'email': self.email,
-                'fav_color': self.fav_color, 
-                'date added': self.date_added }
     
-db.create_all()
+    def __repr__(self):
+        return '<Users %r>' % self.username
 
 #adding user
 @app.route('/user/add', methods=['GET','POST'])
