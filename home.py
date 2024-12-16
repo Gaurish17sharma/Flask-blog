@@ -4,7 +4,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from os import environ
-from datetime import datetime , timezone
+from datetime import datetime , timezone , date
 from werkzeug.security import generate_password_hash , check_password_hash
 
 # flask instance
@@ -185,3 +185,8 @@ def name():
     return render_template('name.html', 
                            username = username , 
                            form=form)
+
+#date json
+@app.route('/date')
+def current_date():
+    return { "Date": date.today() }
