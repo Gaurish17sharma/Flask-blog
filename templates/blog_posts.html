@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Blog Posts!:</h2>
+<br/><br>
+{% for my_post in my_posts %}
+
+ {{ my_post.id }}.
+ <a href=" ">
+    {{ my_post.title }}
+ </a> 
+ - by {{ my_post.author }} </br>
+ -{{ my_post.slug }} </br>
+ -{{ my_post.content }} </br>
+ -{{ my_post.date_posted }} </br>
+ <br>
+
+{% endfor %}
+
+{% endblock %}

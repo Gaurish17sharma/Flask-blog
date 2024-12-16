@@ -1,5 +1,5 @@
 from flask import Flask , render_template , flash
-from forms import NameForm , UserForm , UserUpdationForm
+from forms import NameForm , UserForm , UserUpdationForm , Postform
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -29,6 +29,37 @@ class Posts(db.Model):
     author = db.Column(db.String(255))
     date_posted = db.Column(db.DateTime , default = datetime.now(timezone.utc))
     slug = db.Column(db.String(255))
+
+#adding posts
+@app.route('/add_post', methods=['GET','POST'])
+def add_post():
+    title = None
+    form = Postform()
+    if form.validate_on_submit():
+        post = Posts(title = form.title.data ,
+                     content = form.content.data,
+                     author = form.author.data,
+                     slug = form.slug.data)
+        
+        db.session.add(post)
+        db.session.commit()
+        form.title.data = ''
+        form.content.data = ''
+        form.author.data = ''
+        form.slug.data =''
+
+        flash("Post Added Successfully!!!")
+
+    return render_template('add_post.html',
+                           form = form)
+
+#posts list
+@app.route('/post/list' , methods =['GET', 'POST'])
+def blog_post():
+    my_posts = Posts.query.order_by(Posts.date_posted)
+    return render_template('blog_posts.html' ,
+                           my_posts = my_posts)
+
 
 # creating a User model
 class Users(db.Model):

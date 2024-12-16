@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for message in get_flashed_messages() %}
+
+<div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">
+    Your {{message}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+{% endfor %}
+
+<h2>Add Post:</h2>
+<form action="" method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.title.label(
+        class="form-label"
+        ) }}<br>
+        {{ form.title(
+        class="form-control") }}
+    </p>
+    <p>
+        {{ form.author.label(
+        class="form-label"
+        ) }}<br>
+        {{ form.author(
+        class="form-control") }}
+    </p>
+    <p>
+        {{ form.slug.label(
+            class="form-label"
+        ) }}
+        <br>
+        {{ form.slug(
+        class="form-control") }}
+    </p>
+    <p>
+        {{ form.content.label(
+        class="form-label"
+        ) }}<br>
+        {{ form.content(
+        class="form-control", rows=8) }}
+    </p>
+    <p>
+        {{ form.submit(
+        class="btn btn-secondary"
+        ) }}
+    </p>
+</form>
+
+{% endblock %}
