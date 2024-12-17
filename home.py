@@ -97,15 +97,15 @@ def delete_post(id):
         db.session.commit()
         flash("Post Deleted Successfully!!")
 
-        post = Posts.query.order_by(Posts.date_posted)
-        return render_template('blog_posts.html',
-                               post = post)
+        my_posts = Posts.query.order_by(Posts.date_posted)
+        return render_template('blog_posts.html' ,
+                           my_posts = my_posts)
     
     except:
         flash("There was an error in deleing the user try again!!")
-        post = Posts.query.order_by(Posts.date_posted)
+        my_posts = Posts.query.order_by(Posts.date_posted)
         return render_template('blog_posts.html' ,
-                               post = post)
+                           my_posts = my_posts)
 
 #posts list
 @app.route('/post/list' , methods =['GET', 'POST'])
