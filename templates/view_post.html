@@ -12,15 +12,20 @@
         -{{ post.slug }} </br>
         {{ post.content }} </br>
         -Posted On {{ post.date_posted }} </br>
-        <a href=" {{ url_for('update_post',id = post.id) }}">
-            Edit Post
-        </a> 
-    </div> 
+        <div class="post_button">
+            <a href=" {{ url_for('blog_post') }}">
+                <button>Go Back To Posts</button>
+            </a>
+            <a href=" {{ url_for('update_post',id = post.id) }}">
+                <button>Edit Post</button>
+            </a>
+            <a href=" {{ url_for('delete_post', id = post.id) }}" class="btn btn-danger">
+                Delete
+            </a>
+        </div>
+    </div>
 </div>
 <br>
 
-<a href=" {{ url_for('blog_post') }}">
-    Go Back To Posts
- </a>
 
 {% endblock %}

@@ -88,6 +88,24 @@ def update_post(id):
     return render_template('update_post.html',
                                 form = form)
 
+#deleting post
+@app.route('/delete_post/<int:id>' , methods = ['GET','POST'])
+def delete_post(id):
+    deleting_post = Posts.query.get_or_404(id)
+    try:
+        db.session.delete(deleting_post)
+        db.session.commit()
+        flash("Post Deleted Successfully!!")
+
+        post = Posts.query.order_by(Posts.date_posted)
+        return render_template('blog_posts.html',
+                               post = post)
+    
+    except:
+        flash("There was an error in deleing the user try again!!")
+        post = Posts.query.order_by(Posts.date_posted)
+        return render_template('blog_posts.html' ,
+                               post = post)
 
 #posts list
 @app.route('/post/list' , methods =['GET', 'POST'])
