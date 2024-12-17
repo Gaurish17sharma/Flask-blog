@@ -63,7 +63,7 @@ def view_post(id):
 #update post
 @app.route('/update_post/<int:id>' , methods = ['GET','POST'])
 def update_post(id):
-    form = Postform
+    form = Postform()
     updating_post = Posts.query.get_or_404(id)
     if form.validate_on_submit():
         updating_post.title = form.title.data
@@ -74,19 +74,19 @@ def update_post(id):
             print("does validate...")
             db.session.commit()
             flash('Post Updated Successfully!!!')
-            return redirect(url_for('view_post',
-                                    id =id))
+            return redirect(url_for('view_post', id = id))
         except:
             flash('Error... please Try Again')
             return render_template('update_post.html',
                                    form = form,
                                    updating_post = updating_post
                                    )
-    else:
-        return render_template('update_post.html',
-                                   form = form,
-                                   updating_post = updating_post,
-                                   id = id)
+    form.title.data = updating_post.title
+    form.author.data = updating_post.author
+    form.slug.data = updating_post.slug
+    form.content.data = updating_post.content
+    return render_template('update_post.html',
+                                form = form)
 
 
 #posts list

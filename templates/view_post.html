@@ -12,10 +12,10 @@
         -{{ post.slug }} </br>
         {{ post.content }} </br>
         -Posted On {{ post.date_posted }} </br>
-    </div>
-    <a href=" {{ url_for('update_post') }}">
-        Edit Post
-     </a>  
+        <a href=" {{ url_for('update_post',id = post.id) }}">
+            Edit Post
+        </a> 
+    </div> 
 </div>
 <br>
 
