@@ -2,19 +2,26 @@
 
 {% block content %}
 
-<h2>Blog Posts!:</h2>
-<br/><br>
-{% for my_post in my_posts %}
+<h2>Blog Posts!</h2>
+<br /><br>
+<div class="posts">
+   <div class="post">
+      {% for my_post in my_posts %}
 
- {{ my_post.id }}.
- <a href=" ">
-    {{ my_post.title }}
- </a> 
- - by {{ my_post.author }} </br>
- -{{ my_post.slug }} </br>
- -{{ my_post.content }} </br>
- -{{ my_post.date_posted }} </br>
- <br>
+      {{ my_post.id }}.
+      <a href=" {{ url_for('view_post', id = my_post.id) }}">
+         {{ my_post.title }}
+      </a>
+      - by {{ my_post.author }} </br>
+      -{{ my_post.slug }} </br>
+      -Posted On {{ my_post.date_posted }} </br>
+      <a href=" {{ url_for('update_post', id = my_post.id) }}">
+         Edit Post
+      </a> 
+   </div>
+   
+</div>
+<br>
 
 {% endfor %}
 

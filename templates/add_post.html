@@ -14,7 +14,7 @@
 {% endfor %}
 
 <h2>Add Post:</h2>
-<form action="" method="POST">
+<form class = "add_post" action="" method="POST">
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label(
@@ -43,7 +43,7 @@
         class="form-label"
         ) }}<br>
         {{ form.content(
-        class="form-control", rows=8) }}
+        class="form-control", rows=6) }}
     </p>
     <p>
         {{ form.submit(
