@@ -1,4 +1,4 @@
-from flask import Flask , render_template , flash
+from flask import Flask , render_template , flash , redirect , url_for
 from forms import NameForm , UserForm , UserUpdationForm , Postform
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
@@ -52,6 +52,42 @@ def add_post():
 
     return render_template('add_post.html',
                            form = form)
+
+#indvidual post
+@app.route('/posts/<int:id>' , methods =['GET','POST'])
+def view_post(id):
+    post = Posts.query.get_or_404(id)
+    return render_template('view_post.html',
+                           post = post)
+
+#update post
+@app.route('/update_post/<int:id>' , methods = ['GET','POST'])
+def update_post(id):
+    form = Postform
+    updating_post = Posts.query.get_or_404(id)
+    if form.validate_on_submit():
+        updating_post.title = form.title.data
+        updating_post.author = form.author.data
+        updating_post.slug = form.slug.data
+        updating_post.content = form.content.data
+        try:
+            print("does validate...")
+            db.session.commit()
+            flash('Post Updated Successfully!!!')
+            return redirect(url_for('view_post',
+                                    id =id))
+        except:
+            flash('Error... please Try Again')
+            return render_template('update_post.html',
+                                   form = form,
+                                   updating_post = updating_post
+                                   )
+    else:
+        return render_template('update_post.html',
+                                   form = form,
+                                   updating_post = updating_post,
+                                   id = id)
+
 
 #posts list
 @app.route('/post/list' , methods =['GET', 'POST'])
