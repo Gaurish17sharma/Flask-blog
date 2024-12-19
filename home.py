@@ -1,11 +1,12 @@
 from flask import Flask , render_template , flash , redirect , url_for
-from forms import NameForm , UserForm , UserUpdationForm , Postform
+from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from os import environ
 from datetime import datetime , timezone , date
 from werkzeug.security import generate_password_hash , check_password_hash
+from flask_login import LoginManager , UserMixin , login_user , login_required , logout_user , current_user 
 
 # flask instance
 app = Flask(__name__)
@@ -21,6 +22,46 @@ db = SQLAlchemy(app)
 app.app_context().push()
 migrate = Migrate(app , db)
 
+#flask-login 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view= 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
+#creating login page
+@app.route('/login', methods =['GET','POST'])
+def login():
+    form = Loginform()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = form.username.data).first()
+        if user:
+            if check_password_hash(user.password_hash , form.password_hash.data):
+                login_user(user)
+                flash('Login Successful!!!')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Wrong Password - Try Again...')
+        else:
+            flash('This User Does not Exist')
+    return render_template('login.html' , 
+                       form = form)
+
+@app.route('/logout', methods=['GET','POST'])
+def logout():
+    logout_user()
+    flash('You have been Logged Out')
+    return redirect(url_for('login'))
+
+
+#creating User Dashboard page
+@app.route('/dashboard', methods =['GET','POST'])
+@login_required
+def dashboard():  
+    return render_template('dashboard.html')
+
 #creating blog model
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,6 +73,7 @@ class Posts(db.Model):
 
 #adding posts
 @app.route('/add_post', methods=['GET','POST'])
+@login_required
 def add_post():
     title = None
     form = Postform()
@@ -62,6 +104,7 @@ def view_post(id):
 
 #update post
 @app.route('/update_post/<int:id>' , methods = ['GET','POST'])
+@login_required
 def update_post(id):
     form = Postform()
     updating_post = Posts.query.get_or_404(id)
@@ -90,6 +133,7 @@ def update_post(id):
 
 #deleting a post
 @app.route('/delete_post/<int:id>' , methods = ['GET','POST'])
+@login_required
 def delete_post(id):
     deleting_post = Posts.query.get_or_404(id)
     try:
@@ -116,11 +160,10 @@ def blog_post():
 
 
 # creating a User model
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False)
+    username = db.Column(db.String(80), nullable=False , unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    fav_color = db.Column(db.String(120))
     date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
     password_hash = db.Column(db.String(128))
 
@@ -149,18 +192,16 @@ def add_user():
             hashed_password = generate_password_hash(form.password_hash.data, method='pbkdf2:sha256')
             user = Users(username = form.username.data, 
                          email = form.email.data, 
-                         fav_color = form.fav_color.data,
                          password_hash = hashed_password)
             db.session.add(user)
             db.session.commit()
         username = form.username.data
         form.username.data = ' '
         form.email.data = ' '
-        form.fav_color.data = ' '
         flash("User Added Successfully!!!")
     
     my_users = Users.query.order_by(Users.id)
-    return render_template('add_user.html' ,
+    return render_template('signup.html' ,
                            form = form, 
                            username = username,
                            my_users = my_users)
@@ -175,7 +216,6 @@ def update_list(id):
     if form.validate_on_submit():
         updating_users.username =  form.username.data 
         updating_users.email = form.email.data
-        updating_users.fav_color = form.fav_color.data
         try:
             print("does validate...")
             db.session.commit()

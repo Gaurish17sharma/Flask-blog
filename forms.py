@@ -8,7 +8,7 @@ class NameForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class UserForm(FlaskForm):
-    username = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     fav_color = StringField('Favourite Color')
     password_hash = PasswordField('Password', [
@@ -19,7 +19,7 @@ class UserForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class UserUpdationForm(FlaskForm):
-    username = StringField('Name', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     fav_color = StringField('Favourite Color')
     submit = SubmitField('Submit')
@@ -30,3 +30,9 @@ class Postform(FlaskForm):
     author = StringField('Author', validators=[DataRequired()])
     slug = StringField('Slug', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+class Loginform(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    password_hash = PasswordField('Password',[validators.DataRequired()] )
+    submit = SubmitField('Submit')
+

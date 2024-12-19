@@ -13,7 +13,7 @@
 
 {% endfor %}
 
-<h2>Add User:</h2>
+<h2>Sign Up</h2>
 <form action="" method="POST">
     {{ form.hidden_tag() }}
     <p>
@@ -28,13 +28,6 @@
         class="form-label"
         ) }}<br>
         {{ form.email(
-        class="form-control") }}
-    </p>
-    <p>
-        {{ form.fav_color.label(
-        class="form-label"
-        ) }}<br>
-        {{ form.fav_color(
         class="form-control") }}
     </p>
     <p>
