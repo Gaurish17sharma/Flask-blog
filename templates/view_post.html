@@ -5,7 +5,7 @@
 <h2>Blog Posts!</h2>
 <br /><br>
 <div class="posts">
-    <div class="post">
+    <div class="full-post">
         {{ post.id }}.
         {{ post.title }}
         - by {{ post.author }} </br>
@@ -13,14 +13,15 @@
         {{ post.content }} </br>
         -Posted On {{ post.date_posted }} </br>
         <div class="post_button">
-            <a href=" {{ url_for('blog_post') }}">
-                <button>Go Back To Posts</button>
+            <a href=" {{ url_for('update_post',id = post.id)}}" class="btn btn-secondary mt-3">
+                Edit Post
             </a>
-            <a href=" {{ url_for('update_post',id = post.id) }}">
-                <button>Edit Post</button>
-            </a>
-            <a href=" {{ url_for('delete_post', id = post.id) }}" class="btn btn-danger">
+            <a href=" {{ url_for('delete_post', id = post.id) }}" class="btn btn-danger mt-3">
                 Delete
+            </a>
+            </br>
+            <a href=" {{ url_for('blog_post') }}" class="btn btn-primary mt-3">
+                Go Back To Posts
             </a>
         </div>
     </div>
