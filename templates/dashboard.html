@@ -22,10 +22,17 @@
 <strong>Email:{{ current_user.email }}</strong></br>
 <strong>Joined On:{{ current_user.date_added }}</strong></br>
 
-
+<br>
 
 <a href="{{ url_for('logout') }}" class="btn btn-danger">
     Log Out
 </a>
+<a href=" {{ url_for('update_list',id = current_user.id) }}" class="btn btn-secondary">
+    Update Profile
+</a> 
+<a href=" {{ url_for('delete_user', id = current_user.id) }}" class="btn btn-danger">
+    Delete
+ </a>
+
 
 {% endblock %}

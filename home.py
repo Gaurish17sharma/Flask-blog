@@ -198,7 +198,8 @@ def add_user():
         username = form.username.data
         form.username.data = ' '
         form.email.data = ' '
-        flash("User Added Successfully!!!")
+        flash("Account Created Successfully!!!")
+        return redirect(url_for('login')) 
     
     my_users = Users.query.order_by(Users.id)
     return render_template('signup.html' ,
@@ -219,7 +220,7 @@ def update_list(id):
         try:
             print("does validate...")
             db.session.commit()
-            flash('User Updated Successfully!!!')
+            flash('Profile Updated Successfully!!!')
             return render_template('update_list.html',
                                    form = form,
                                    updating_users = updating_users,
@@ -249,7 +250,7 @@ def delete_user(id):
         flash("User Deleted Successfully!!")
 
         my_users = Users.query.order_by(Users.id)
-        return render_template('add_user.html' ,
+        return render_template('signup.html' ,
                            form = form, 
                            username = username,
                            my_users = my_users)
@@ -257,7 +258,7 @@ def delete_user(id):
     except:
         flash("There was an error in deleing the user try again!!")
         my_users = Users.query.order_by(Users.id)
-        return render_template('add_user.html' ,
+        return render_template('signup.html' ,
                            form = form, 
                            username = username,
                            my_users = my_users)
