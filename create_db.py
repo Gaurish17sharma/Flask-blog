@@ -1,5 +1,5 @@
+#creating database conn
 import psycopg2
-
 conn = psycopg2.connect(database="flask_users",  
                         user="gaurishsharma", 
                         password="password",  
