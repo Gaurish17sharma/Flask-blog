@@ -5,9 +5,8 @@
 <h2>Blog Posts!</h2>
 <br /><br>
 <div class="posts">
+   {% for my_post in my_posts %}
    <div class="post">
-      {% for my_post in my_posts %}
-
       {{ my_post.id }}.
       <a href=" {{ url_for('view_post', id = my_post.id) }}">
          {{ my_post.title }}
@@ -17,14 +16,12 @@
       -Posted On {{ my_post.date_posted }} </br>
       <a href=" {{ url_for('update_post', id = my_post.id) }}">
          <button>Edit Post</button>
-      </a> 
+      </a>
       <a href=" {{ url_for('delete_post', id = my_post.id) }}" class="btn btn-danger">
          Delete
-     </a>
+      </a>
    </div>
-   
 </div>
-<br>
 
 {% endfor %}
 
