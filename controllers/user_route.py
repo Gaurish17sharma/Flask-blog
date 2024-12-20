@@ -1,7 +1,7 @@
-from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
-from models import Posts , Users , db
+from forms import UserForm , UserUpdationForm 
+from models import Users , db
 from werkzeug.security import generate_password_hash , check_password_hash
-from flask import Flask , render_template , flash , redirect , url_for
+from flask import render_template , flash , redirect , url_for
 
 #adding user
 def add_userform():

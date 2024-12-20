@@ -2,7 +2,6 @@ from flask import Flask , render_template , flash , redirect , url_for
 from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
 from config import Config
 from flask_migrate import Migrate
-from os import environ
 from datetime import datetime , timezone , date
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin , login_user , login_required , logout_user , current_user
