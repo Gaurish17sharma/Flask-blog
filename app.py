@@ -1,12 +1,12 @@
 from flask import Flask , render_template , flash , redirect , url_for
 from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
 from config import Config
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from os import environ
 from datetime import datetime , timezone , date
 from werkzeug.security import generate_password_hash , check_password_hash
-from flask_login import LoginManager , UserMixin , login_user , login_required , logout_user , current_user 
+from flask_login import LoginManager , UserMixin , login_user , login_required , logout_user , current_user
+from models import Posts , Users , db
 
 # flask instance
 app = Flask(__name__)
@@ -17,43 +17,10 @@ app.config['SECRET_KEY'] = Config.SECRET_KEY
 # adding new database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://gaurishsharma:password@localhost/flask_users'
 # initialize the database
-db = SQLAlchemy(app)
 
 app.app_context().push()
+db.init_app(app)
 migrate = Migrate(app , db)
-
-#flask-login 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view= 'login'
-
-@login_manager.user_loader
-def load_user(user_id):
-    return Users.query.get(int(user_id))
-
-#creating login page
-@app.route('/login', methods =['GET','POST'])
-def login():
-    form = Loginform()
-    if form.validate_on_submit():
-        user = Users.query.filter_by(username = form.username.data).first()
-        if user:
-            if check_password_hash(user.password_hash , form.password_hash.data):
-                login_user(user)
-                flash('Login Successful!!!')
-                return redirect(url_for('dashboard'))
-            else:
-                flash('Wrong Password - Try Again...')
-        else:
-            flash('This User Does not Exist')
-    return render_template('login.html' , 
-                       form = form)
-
-@app.route('/logout', methods=['GET','POST'])
-def logout():
-    logout_user()
-    flash('You have been Logged Out')
-    return redirect(url_for('login'))
 
 
 #creating User Dashboard page
@@ -62,14 +29,6 @@ def logout():
 def dashboard():  
     return render_template('dashboard.html')
 
-#creating blog model
-class Posts(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(255))
-    content = db.Column(db.Text)
-    author = db.Column(db.String(255))
-    date_posted = db.Column(db.DateTime , default = datetime.now(timezone.utc))
-    slug = db.Column(db.String(255))
 
 #adding posts
 @app.route('/add_post', methods=['GET','POST'])
@@ -156,30 +115,8 @@ def delete_post(id):
 def blog_post():
     my_posts = Posts.query.order_by(Posts.date_posted)
     return render_template('blog_posts.html' ,
-                           my_posts = my_posts)
+                           my_posts = my_posts) 
 
-
-# creating a User model
-class Users(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False , unique=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
-    password_hash = db.Column(db.String(128))
-
-    @property
-    def password(self):
-        raise AttributeError("Password is not a readable attribute")
-    
-    @password.setter
-    def password(self,password):
-        self.password_hash = generate_password_hash(password)
-
-    def verify_password(self,password):
-        return check_password_hash(self.password_hash , password)
-    
-    def __repr__(self):
-        return '<Users %r>' % self.username
 
 #adding user
 @app.route('/user/add', methods=['GET','POST'])
@@ -221,11 +158,8 @@ def update_list(id):
             print("does validate...")
             db.session.commit()
             flash('Profile Updated Successfully!!!')
-            return render_template('update_list.html',
-                                   form = form,
-                                   updating_users = updating_users,
-                                   id = id
-                                   )
+            return redirect(url_for('dashboard'))
+                                   
         except:
             flash('Error... please Try Again')
             return render_template('update_list.html',

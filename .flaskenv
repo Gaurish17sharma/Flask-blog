@@ -1,3 +1,3 @@
-FLASK_APP = home.py
+FLASK_APP = app.py
 
 #env
