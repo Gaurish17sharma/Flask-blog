@@ -1,13 +1,10 @@
-from app import app
 from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
 from models import Posts , Users , db
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask import Flask , render_template , flash , redirect , url_for
 
-
 #adding user
-@app.route('/user/add', methods=['GET','POST'])
-def add_user():
+def add_userform():
     username = None
     form = UserForm()
     if form.validate_on_submit():
@@ -25,16 +22,8 @@ def add_user():
         flash("Account Created Successfully!!!")
         return redirect(url_for('login')) 
     
-    my_users = Users.query.order_by(Users.id)
-    return render_template('signup.html' ,
-                           form = form, 
-                           username = username,
-                           my_users = my_users)
-
-
 # updating user info
-@app.route('/update_list/<int:id>', methods = ['GET' , 'POST'])
-def update_list(id):
+def update_listform(id):
     print(id)
     form = UserUpdationForm()
     updating_users = Users.query.get_or_404(id)
@@ -60,8 +49,7 @@ def update_list(id):
                                    id = id)
 
 #deleting user
-@app.route('/delete_user/<int:id>', methods = ['GET' , 'POST'])
-def delete_user(id):
+def delete_userform(id):
     form = UserForm()
     username = None
     user_to_delete = Users.query.get_or_404(id)
@@ -82,11 +70,4 @@ def delete_user(id):
         return render_template('signup.html' ,
                            form = form, 
                            username = username,
-                           my_users = my_users)
-
-#user list
-@app.route('/user/list' , methods =['GET', 'POST'])
-def user_list():
-    my_users = Users.query.order_by(Users.id)
-    return render_template('user_list.html' ,
                            my_users = my_users)

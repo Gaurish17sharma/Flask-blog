@@ -7,6 +7,9 @@ from datetime import datetime , timezone , date
 from werkzeug.security import generate_password_hash , check_password_hash
 from flask_login import LoginManager , UserMixin , login_user , login_required , logout_user , current_user
 from models import Posts , Users , db
+from controllers.login_route import loginform
+from controllers.post_route import add_postform , update_postform , delete_postform
+from controllers.user_route import add_userform , update_listform , delete_userform
 
 # flask instance
 app = Flask(__name__)
@@ -22,6 +25,39 @@ app.app_context().push()
 db.init_app(app)
 migrate = Migrate(app , db)
 
+#flask-login 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view= 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Users.query.get(int(user_id))
+
+#creating login page
+@app.route('/login', methods =['GET','POST'])
+def login():
+    form = Loginform()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(username = form.username.data).first()
+        if user:
+            if check_password_hash(user.password_hash , form.password_hash.data):
+                login_user(user)
+                flash('Login Successful!!!')
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Wrong Password - Try Again...')
+        else:
+            flash('This User Does not Exist')
+    return render_template('login.html' , 
+                       form = form)
+
+@app.route('/logout', methods=['GET','POST'])
+def logout():
+    logout_user()
+    flash('You have been Logged Out')
+    return redirect(url_for('login'))
+
 
 #creating User Dashboard page
 @app.route('/dashboard', methods =['GET','POST'])
@@ -36,21 +72,7 @@ def dashboard():
 def add_post():
     title = None
     form = Postform()
-    if form.validate_on_submit():
-        post = Posts(title = form.title.data ,
-                     content = form.content.data,
-                     author = form.author.data,
-                     slug = form.slug.data)
-        
-        db.session.add(post)
-        db.session.commit()
-        form.title.data = ''
-        form.content.data = ''
-        form.author.data = ''
-        form.slug.data =''
-
-        flash("Post Added Successfully!!!")
-
+    add_postform()
     return render_template('add_post.html',
                            form = form)
 
@@ -67,22 +89,7 @@ def view_post(id):
 def update_post(id):
     form = Postform()
     updating_post = Posts.query.get_or_404(id)
-    if form.validate_on_submit():
-        updating_post.title = form.title.data
-        updating_post.author = form.author.data
-        updating_post.slug = form.slug.data
-        updating_post.content = form.content.data
-        try:
-            print("does validate...")
-            db.session.commit()
-            flash('Post Updated Successfully!!!')
-            return redirect(url_for('view_post', id = id))
-        except:
-            flash('Error... please Try Again')
-            return render_template('update_post.html',
-                                   form = form,
-                                   updating_post = updating_post
-                                   )
+    update_postform(id)
     form.title.data = updating_post.title
     form.author.data = updating_post.author
     form.slug.data = updating_post.slug
@@ -94,21 +101,11 @@ def update_post(id):
 @app.route('/delete_post/<int:id>' , methods = ['GET','POST'])
 @login_required
 def delete_post(id):
-    deleting_post = Posts.query.get_or_404(id)
-    try:
-        db.session.delete(deleting_post)
-        db.session.commit()
-        flash("Post Deleted Successfully!!")
-
-        my_posts = Posts.query.order_by(Posts.date_posted)
-        return render_template('blog_posts.html' ,
+    delete_postform(id)
+    my_posts = Posts.query.order_by(Posts.date_posted)
+    return render_template('blog_posts.html',
                            my_posts = my_posts)
     
-    except:
-        flash("There was an error in deleing the user try again!!")
-        my_posts = Posts.query.order_by(Posts.date_posted)
-        return render_template('blog_posts.html' ,
-                           my_posts = my_posts)
 
 #posts list
 @app.route('/post/list' , methods =['GET', 'POST'])
@@ -121,82 +118,35 @@ def blog_post():
 #adding user
 @app.route('/user/add', methods=['GET','POST'])
 def add_user():
-    username = None
     form = UserForm()
-    if form.validate_on_submit():
-        user = Users.query.filter_by(email=form.email.data).first()
-        if user is None:
-            hashed_password = generate_password_hash(form.password_hash.data, method='pbkdf2:sha256')
-            user = Users(username = form.username.data, 
-                         email = form.email.data, 
-                         password_hash = hashed_password)
-            db.session.add(user)
-            db.session.commit()
-        username = form.username.data
-        form.username.data = ' '
-        form.email.data = ' '
-        flash("Account Created Successfully!!!")
-        return redirect(url_for('login')) 
-    
+    add_userform()
     my_users = Users.query.order_by(Users.id)
     return render_template('signup.html' ,
-                           form = form, 
-                           username = username,
+                           form = form,
                            my_users = my_users)
 
 
 # updating user info
 @app.route('/update_list/<int:id>', methods = ['GET' , 'POST'])
 def update_list(id):
-    print(id)
     form = UserUpdationForm()
+    update_listform(id)
     updating_users = Users.query.get_or_404(id)
-    if form.validate_on_submit():
-        updating_users.username =  form.username.data 
-        updating_users.email = form.email.data
-        try:
-            print("does validate...")
-            db.session.commit()
-            flash('Profile Updated Successfully!!!')
-            return redirect(url_for('dashboard'))
-                                   
-        except:
-            flash('Error... please Try Again')
-            return render_template('update_list.html',
-                                   form = form,
-                                   updating_users = updating_users
-                                   )
-    else:
-        return render_template('update_list.html',
+    return render_template('update_list.html',
                                    form = form,
                                    updating_users = updating_users,
                                    id = id)
+
 
 #deleting user
 @app.route('/delete_user/<int:id>', methods = ['GET' , 'POST'])
 def delete_user(id):
     form = UserForm()
-    username = None
-    user_to_delete = Users.query.get_or_404(id)
-    try:
-        db.session.delete(user_to_delete)
-        db.session.commit()
-        flash("User Deleted Successfully!!")
-
-        my_users = Users.query.order_by(Users.id)
-        return render_template('signup.html' ,
+    delete_userform(id)
+    my_users = Users.query.order_by(Users.id)
+    return render_template('signup.html' ,
                            form = form, 
-                           username = username,
                            my_users = my_users)
-        
-    except:
-        flash("There was an error in deleing the user try again!!")
-        my_users = Users.query.order_by(Users.id)
-        return render_template('signup.html' ,
-                           form = form, 
-                           username = username,
-                           my_users = my_users)
-
 
 #user list
 @app.route('/user/list' , methods =['GET', 'POST'])
