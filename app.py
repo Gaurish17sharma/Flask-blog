@@ -38,17 +38,7 @@ def load_user(user_id):
 @app.route('/login', methods =['GET','POST'])
 def login():
     form = Loginform()
-    if form.validate_on_submit():
-        user = Users.query.filter_by(username = form.username.data).first()
-        if user:
-            if check_password_hash(user.password_hash , form.password_hash.data):
-                login_user(user)
-                flash('Login Successful!!!')
-                return redirect(url_for('dashboard'))
-            else:
-                flash('Wrong Password - Try Again...')
-        else:
-            flash('This User Does not Exist')
+    loginform()
     return render_template('login.html' , 
                        form = form)
 
@@ -156,7 +146,6 @@ def user_list():
                            my_users = my_users)
 
 
-
 #example
 @app.route('/')
 
@@ -175,14 +164,6 @@ def index():
     return render_template('index.html' , title ='Home' , 
                            users = users, 
                            posts = posts)
-
-#practice route
-@app.route('/user/<name>')
-
-def user(name):
-    return render_template('user.html', 
-                           name = name )
-
 
 #nameform
 @app.route('/name' , methods=['GET', 'POST'])
