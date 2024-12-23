@@ -4,7 +4,7 @@ from flask import Flask , render_template , flash , redirect , url_for
 from forms import Loginform
 from flask_login import login_user , login_required , logout_user , current_user
 
-#login form
+#for login form
 def loginform():
     form = Loginform()
     if form.validate_on_submit():
