@@ -12,7 +12,7 @@
             {{ my_post.title }}
          </a> </br>
       </h3>
-      - by {{ my_post.author }} </br>
+      - by {{ my_post.users.username }} </br>
       -{{ my_post.slug }} </br>
       -Posted On {{ my_post.date_posted }} </br>
       <a href=" {{ url_for('update_post', id = my_post.id) }}" class="btn btn-secondary mt-3">

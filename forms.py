@@ -27,7 +27,6 @@ class UserUpdationForm(FlaskForm):
 class Postform(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = StringField('Content', validators=[DataRequired()], widget=TextArea())
-    author = StringField('Author', validators=[DataRequired()])
     slug = StringField('Slug', validators=[DataRequired()])
     submit = SubmitField('Submit')
 

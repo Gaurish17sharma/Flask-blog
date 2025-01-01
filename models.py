@@ -12,7 +12,11 @@ class Users(db.Model, UserMixin):
     username = db.Column(db.String(80), nullable=False , unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     date_added = db.Column(db.DateTime , default = datetime.now(timezone.utc))
+    #password hashing
     password_hash = db.Column(db.String(128))
+    #one to many relationship
+    posts = db.relationship('Posts', backref='users')
+
 
     @property
     def password(self):
@@ -34,7 +38,9 @@ class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255))
     content = db.Column(db.Text)
-    author = db.Column(db.String(255))
     date_posted = db.Column(db.DateTime , default = datetime.now(timezone.utc))
     slug = db.Column(db.String(255))
+    #Foreign Key For one to many relationship
+    users_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+
 

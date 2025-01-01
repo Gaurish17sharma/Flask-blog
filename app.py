@@ -80,7 +80,6 @@ def update_post(id):
     updating_post = Posts.query.get_or_404(id)
     update_postform(id)
     form.title.data = updating_post.title
-    form.author.data = updating_post.author
     form.slug.data = updating_post.slug
     form.content.data = updating_post.content
     return render_template('update_post.html',
