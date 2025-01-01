@@ -1,5 +1,5 @@
 from flask import Flask , render_template , flash , redirect , url_for
-from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform
+from forms import NameForm , UserForm , UserUpdationForm , Postform , Loginform , Searchform
 from config import Config
 from flask_migrate import Migrate
 from datetime import datetime , timezone , date
@@ -41,6 +41,7 @@ def login():
     return render_template('login.html' , 
                        form = form)
 
+#creating logout button
 @app.route('/logout', methods=['GET','POST'])
 def logout():
     logout_user()
@@ -54,6 +55,21 @@ def logout():
 def dashboard():  
     return render_template('dashboard.html')
 
+#for passing data to base html file
+@app.context_processor
+def base():
+    form = Searchform()
+    return dict(form = form)
+
+#creating search bar
+@app.route('/search' , methods=['GET','POST'])
+def search():
+    form = Searchform()
+    if form.validate_on_submit():
+        Searched = form.search.data
+        return render_template('search.html',
+                           form = form,
+                           Searched=Searched)
 
 #adding posts
 @app.route('/add_post', methods=['GET','POST'])

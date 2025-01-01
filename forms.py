@@ -35,3 +35,7 @@ class Loginform(FlaskForm):
     password_hash = PasswordField('Password',[validators.DataRequired()] )
     submit = SubmitField('Submit')
 
+class Searchform(FlaskForm):
+    search = StringField('Searched' , validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
