@@ -22,7 +22,6 @@ def add_postform():
 
         flash("Post Added Successfully!!!")
 
-
 #updating post
 def update_postform(id):
         form = Postform()

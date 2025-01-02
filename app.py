@@ -69,7 +69,7 @@ def search():
         Searched = form.search.data
         return render_template('search.html',
                            form = form,
-                           Searched=Searched)
+                           Searched = Searched)
 
 #adding posts
 @app.route('/add_post', methods=['GET','POST'])
